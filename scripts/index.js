@@ -59,6 +59,7 @@ let names = [
 ];
 let board = [];
 let boards = [];
+let turn = true; //white
 let pressedSquare = null;
 function preload() {
   for (let y = 0; y < 8; y++) {
@@ -128,23 +129,20 @@ function mousePressed() {
                 selected.piece === null &&
                 board[pressedSquare.y - 1][pressedSquare.x].piece === null
               ) {
-                selected.piece = pressedSquare.piece;
-                pressedSquare.piece = null;
+                nextTurn(selected);
               }
             } else if (
               selected.piece !== null &&
               selected.x - pressedSquare.x == 1 &&
               selected.y === pressedSquare.y - 1
             ) {
-              selected.piece = pressedSquare.piece;
-              pressedSquare.piece = null;
+              nextTurn(selected);
             } else if (
               selected.piece !== null &&
               selected.x - pressedSquare.x == -1 &&
               selected.y === pressedSquare.y - 1
             ) {
-              selected.piece = pressedSquare.piece;
-              pressedSquare.piece = null;
+              nextTurn(selected);
             }
           } else if (pressedSquare.piece.name.charAt(1) === "d") {
             if (
@@ -158,23 +156,20 @@ function mousePressed() {
                 selected.piece === null &&
                 board[pressedSquare.y + 1][pressedSquare.x].piece === null
               ) {
-                selected.piece = pressedSquare.piece;
-                pressedSquare.piece = null;
+                nextTurn(selected);
               }
             } else if (
               selected.piece !== null &&
               selected.x - pressedSquare.x == -1 &&
               selected.y === pressedSquare.y + 1
             ) {
-              selected.piece = pressedSquare.piece;
-              pressedSquare.piece = null;
+              nextTurn(selected);
             } else if (
               selected.piece !== null &&
               selected.x - pressedSquare.x == +1 &&
               selected.y === pressedSquare.y + 1
             ) {
-              selected.piece = pressedSquare.piece;
-              pressedSquare.piece = null;
+              nextTurn(selected);
             }
           }
           break;
@@ -184,8 +179,7 @@ function mousePressed() {
               selected.y === pressedSquare.y) &&
             findInPath(pressedSquare, selected)
           ) {
-            selected.piece = pressedSquare.piece;
-            pressedSquare.piece = null;
+            nextTurn(selected);
           }
           break;
         case "n":
@@ -195,8 +189,8 @@ function mousePressed() {
             (Math.abs(selected.x - pressedSquare.x) == 1 &&
               Math.abs(selected.y - pressedSquare.y) == 2)
           ) {
-            selected.piece = pressedSquare.piece;
-            pressedSquare.piece = null;
+            nextTurn(selected);
+
             // boards.push(Board.boardFromBoard(boards[boards.length - 1]));
           }
           break;
@@ -206,8 +200,7 @@ function mousePressed() {
               Math.abs(selected.y - pressedSquare.y) &&
             findInPath(pressedSquare, selected)
           ) {
-            selected.piece = pressedSquare.piece;
-            pressedSquare.piece = null;
+            nextTurn(selected);
           }
           break;
         case "q":
@@ -218,8 +211,7 @@ function mousePressed() {
               selected.y === pressedSquare.y) &&
             findInPath(pressedSquare, selected)
           ) {
-            selected.piece = pressedSquare.piece;
-            pressedSquare.piece = null;
+            nextTurn(selected);
           }
           break;
         case "k":
@@ -231,8 +223,7 @@ function mousePressed() {
             (Math.abs(selected.x - pressedSquare.x) == 1 &&
               Math.abs(selected.y - pressedSquare.y) == 1)
           ) {
-            selected.piece = pressedSquare.piece;
-            pressedSquare.piece = null;
+            nextTurn(selected);
           }
           break;
         default:
@@ -348,4 +339,19 @@ function findInPath(square0, selectedSquare) {
       return true;
     }
   }
+}
+
+function nextTurn(selected) {
+  if (pressedSquare.piece.name.charAt("1") === "l" && turn) {
+    selected.piece = pressedSquare.piece;
+    pressedSquare.piece = null;
+    turn = turn ? false : true;
+  } else if (pressedSquare.piece.name.charAt("1") === "d" && !turn) {
+    selected.piece = pressedSquare.piece;
+    pressedSquare.piece = null;
+    turn = turn ? false : true;
+  }
+  console.log(turn);
+  document.getElementById("turn").innerText =
+    (turn ? "white" : "black") + " plays";
 }
