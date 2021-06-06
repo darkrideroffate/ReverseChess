@@ -109,7 +109,10 @@ function mousePressed() {
   } else if (pressedSquare === selected) {
     pressedSquare = null;
   } else {
-    if (pressedSquare.piece !== null && selected.piece.name.charAt(0) !== "k") {
+    if (
+      pressedSquare.piece !== null &&
+      (selected.piece === null || selected.piece.name.charAt(0) !== "k")
+    ) {
       switch (pressedSquare.piece.name.charAt(0)) {
         case "p": //Pawn
           if (pressedSquare.piece.name.charAt(1) === "l") {
