@@ -14,6 +14,7 @@ SIZE = 400;
 class Piece {
   constructor(name) {
     this.img = loadImage("pieces/" + name + ".svg");
+    this.imgR = loadImage("pieces/" + name + "r" + ".svg");
     this.name = name;
     this.pressed = false;
   }
@@ -34,11 +35,19 @@ class BoardSquare {
     square(this.x * (SIZE / 8), this.y * (SIZE / 8), SIZE / 8);
   }
   drawPiece() {
-    image(
-      this.piece.img,
-      this.x * (SIZE / 8) + (SIZE / 8 - 45) / 2,
-      this.y * (SIZE / 8) + (SIZE / 8 - 45) / 2
-    );
+    if (!turn) {
+      image(
+        this.piece.imgR,
+        this.x * (SIZE / 8) + (SIZE / 8 - 45) / 2,
+        this.y * (SIZE / 8) + (SIZE / 8 - 45) / 2
+      );
+    } else {
+      image(
+        this.piece.img,
+        this.x * (SIZE / 8) + (SIZE / 8 - 45) / 2,
+        this.y * (SIZE / 8) + (SIZE / 8 - 45) / 2
+      );
+    }
   }
   contains(x, y) {
     if (
@@ -95,15 +104,26 @@ function preload() {
 }
 function setup() {
   createCanvas(SIZE, SIZE);
+  angleMode(DEGREES);
 }
 
 function draw() {
   background(220);
+  if (!turn) {
+    translate(SIZE, SIZE);
+
+    rotate(180);
+  }
   drawBoard();
 }
 function mousePressed() {
-  const selected =
-    board[floor(mouseY / (SIZE / 8))][floor(mouseX / (SIZE / 8))];
+  let squarey = floor(mouseY / (SIZE / 8)),
+    squarex = floor(mouseX / (SIZE / 8));
+  if (!turn) {
+    squarex = 7 - squarex;
+    squarey = 7 - squarey;
+  }
+  const selected = board[squarey][squarex];
 
   if (pressedSquare === null) {
     pressedSquare = selected;
@@ -239,6 +259,10 @@ function drawBoard() {
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
       board[y][x].drawSquare();
+    }
+  }
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
       if (board[y][x].piece !== null) {
         board[y][x].drawPiece();
       }
