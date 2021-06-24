@@ -367,15 +367,51 @@ function findInPath(square0, selectedSquare) {
 
 function nextTurn(selected) {
   if (pressedSquare.piece.name.charAt("1") === "l" && turn) {
-    selected.piece = pressedSquare.piece;
-    pressedSquare.piece = null;
-    turn = turn ? false : true;
+    if (!findCheck()) {
+      selected.piece = pressedSquare.piece;
+      pressedSquare.piece = null;
+      turn = !turn;
+    } else {
+    }
   } else if (pressedSquare.piece.name.charAt("1") === "d" && !turn) {
-    selected.piece = pressedSquare.piece;
-    pressedSquare.piece = null;
-    turn = turn ? false : true;
+    if (!findCheck()) {
+      selected.piece = pressedSquare.piece;
+      pressedSquare.piece = null;
+      turn = !turn;
+    } else {
+    }
   }
-  console.log(turn);
   document.getElementById("turn").innerText =
     (turn ? "white" : "black") + " plays";
+}
+
+function findCheck() {
+  var king = turn ? findKing("white") : findKing("black");
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      if (
+        king.piece.name.charAt(1) === "l" &&
+        board[y][x].piece !== null &&
+        board[y][x].piece.name.charAt(1) === "d"
+      ) {
+        if (
+          board[y][x].piece.name.charAt(0) !== "n" &&
+          board[y][x].piece.name.charAt(0) !== "p" &&
+          board[y][x].piece.name.charAt(0) !== "k"
+        ) {
+          return findInPath(board[y][x], king);
+        }
+      }
+    }
+  }
+}
+function findKing(type) {
+  type = type === "white" ? "klt" : "kdt";
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      if (board[i][j].piece !== null && board[i][j].piece.name === type) {
+        return board[i][j];
+      }
+    }
+  }
 }
